@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tweedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <button class="btn-back" onclick="window.location.href='home.html'">← 홈으로</button>
+                <h1 class="app-title">📅 Tweedule</h1>
+                <span id="userName" class="user-name"></span>
+            </div>
+            <div class="header-right">
+                <button id="darkModeToggleApp" class="btn-dark-mode">🌙</button>
+                <button id="logoutBtn" class="btn-logout">로그아웃</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar desktop-only">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth" class="calendar-nav">◀</button>
+                        <h2 id="currentMonth"></h2>
+                        <button id="nextMonth" class="calendar-nav">▶</button>
+                    </div>
+                    <div id="calendar" class="calendar-grid"></div>
+                    <button id="todayBtn" class="btn-today">오늘</button>
+                </div>
+
+                <div class="view-selector">
+                    <button class="view-btn" data-view="day">일간</button>
+                    <button class="view-btn" data-view="week">주간</button>
+                    <button class="view-btn" data-view="month">월간</button>
+                    <button class="view-btn" data-view="year">연간</button>
+                    <button class="view-btn" data-view="monthGoal">월간목표</button>
+                    <button class="view-btn" data-view="stats">통계</button>
+                    <button class="view-btn" data-view="todo">할일</button>
+                    <button class="view-btn" data-view="memo">메모</button>
+                    <button class="view-btn" data-view="diary">일기</button>
+                    <button class="view-btn" data-view="timecapsule">타임캡슐</button>
+                    <button class="view-btn" data-view="dday">D-Day</button>
+                    <button class="view-btn" data-view="clock">시계</button>
+                    <button class="view-btn" data-view="fortune">포춘쿠키</button>
+                    <button class="view-btn" data-view="meditation">명상</button>
+                    <button class="view-btn" data-view="category">카테고리</button>
+                </div>
+            </aside>
+
+            <main class="main-area">
+                <!-- 일간 뷰 -->
+                <div id="dayView" class="view-content active">
+                    <div class="date-header">
+                        <h2 id="selectedDate"></h2>
+                    </div>
+                    <div class="timetable-header">
+                        <h3>일정</h3>
+                        <button class="btn-add-icon" onclick="openScheduleModal()">+ 일정 추가</button>
+                    </div>
+                    <div id="timetable" class="timetable"></div>
+                </div>
+
+                <!-- 주간 뷰 -->
+                <div id="weekView" class="view-content">
+                    <div class="week-nav-header">
+                        <button id="prevWeek" class="week-nav-btn">◀ 이전 주</button>
+                        <h3 id="currentWeekLabel"></h3>
+                        <button id="nextWeek" class="week-nav-btn">다음 주 ▶</button>
+                    </div>
+                    <div id="weekViewContent" class="week-view-grid"></div>
+                </div>
+
+                <!-- 월간 뷰 -->
+                <div id="monthView" class="view-content">
+                    <div class="view-header">
+                        <h3>월간 일정</h3>
+                    </div>
+                    <div id="monthViewContent" class="month-view-grid"></div>
+                </div>
+
+                <!-- 연간 뷰 -->
+                <div id="yearView" class="view-content">
+                    <div class="year-container">
+                        <div class="year-header">
+                            <button id="prevYear" class="year-nav">◀</button>
+                            <h2 id="currentYear"></h2>
+                            <button id="nextYear" class="year-nav">▶</button>
+                        </div>
+                        
+                        <section class="year-goals-section">
+                            <div class="view-header">
+                                <h3>연간 목표</h3>
+                                <button class="btn-add-icon" onclick="openYearGoalModal()">+ 목표 추가</button>
+                            </div>
+                            <div id="yearGoalsList" class="year-goals-list"></div>
+                        </section>
+                        
+                        <section class="year-months-section">
+                            <div class="view-header">
+                                <h3>월별 통계</h3>
+                            </div>
+                            <div id="yearMonthsGrid" class="year-months-grid"></div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- 월간 목표 뷰 -->
+                <div id="monthGoalView" class="view-content">
+                    <div class="month-goal-container">
+                        <div class="month-goal-header">
+                            <button id="prevMonthGoal" class="month-nav">◀</button>
+                            <h2 id="currentMonthGoal"></h2>
+                            <button id="nextMonthGoal" class="month-nav">▶</button>
+                        </div>
+                        
+                        <section class="month-goals-section">
+                            <div class="view-header">
+                                <h3>이번 달 목표</h3>
+                                <button class="btn-add-icon" onclick="openMonthGoalModal()">+ 목표 추가</button>
+                            </div>
+                            <div id="monthGoalsList" class="month-goals-list"></div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- 통계 뷰 -->
+                <div id="statsView" class="view-content">
+                    <div class="stats-container">
+                        <h3>이번 달 통계</h3>
+                        <div class="stats-summary">
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalTodos">0</div>
+                                <div class="stat-label">전체 할 일</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="completedTodos">0</div>
+                                <div class="stat-label">완료한 할 일</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="completionRate">0%</div>
+                                <div class="stat-label">달성률</div>
+                            </div>
+                        </div>
+                        
+                        <section class="stats-section">
+                            <h4>카테고리별 통계</h4>
+                            <div id="categoryStats" class="category-stats"></div>
+                        </section>
+                        
+                        <section class="stats-section">
+                            <h4>일별 완료 현황</h4>
+                            <div id="dailyChart" class="daily-chart"></div>
+                        </section>
+                        
+                        <section class="stats-section">
+                            <h4>카테고리별 시간 사용</h4>
+                            <div id="timeChart" class="time-chart"></div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- 할 일 뷰 -->
+                <div id="todoView" class="view-content">
+                    <div class="view-header">
+                        <h3>할 일 목록</h3>
+                        <button class="btn-add-icon" onclick="openTodoModal()">+ 할 일 추가</button>
+                    </div>
+                    <div class="sort-controls">
+                        <label>정렬:</label>
+                        <select id="sortSelect" class="sort-select">
+                            <option value="date">날짜순</option>
+                            <option value="priority">우선순위</option>
+                            <option value="alphabetical">가나다순</option>
+                        </select>
+                    </div>
+                    <div id="todoList" class="todo-list-view"></div>
+                </div>
+
+                <!-- 메모 뷰 -->
+                <div id="memoView" class="view-content">
+                    <div class="memo-container">
+                        <div class="view-header">
+                            <h3>날짜별 메모</h3>
+                        </div>
+                        <div class="memo-list" id="memoList"></div>
+                        <button class="btn-add-icon" onclick="openMemoModal()" style="margin-top: 20px; width: 100%;">+ 새 메모 작성</button>
+                    </div>
+                </div>
+
+                <!-- 일기 뷰 -->
+                <div id="diaryView" class="view-content">
+                    <div class="diary-container">
+                        <div class="view-header">
+                            <h3>나의 일기 📖</h3>
+                        </div>
+                        <div id="diaryList" class="diary-list"></div>
+                        <button class="btn-add-icon" onclick="openDiaryModal()" style="margin-top: 20px; width: 100%;">+ 일기 쓰기</button>
+                    </div>
+                </div>
+
+                <!-- 타임캡슐 뷰 -->
+                <div id="timecapsuleView" class="view-content">
+                    <div class="timecapsule-container">
+                        <div class="view-header">
+                            <h3>타임캡슐 🎁</h3>
+                            <button class="btn-add-icon" onclick="openTimecapsuleModal()">+ 캡슐 만들기</button>
+                        </div>
+                        <p class="view-description">미래의 나에게 메시지를 남겨보세요</p>
+                        <div id="timecapsuleList" class="timecapsule-list"></div>
+                    </div>
+                </div>
+
+                <!-- D-Day 뷰 -->
+                <div id="ddayView" class="view-content">
+                    <div class="dday-container">
+                        <div class="view-header">
+                            <h3>D-Day 카운터 ⏰</h3>
+                            <button class="btn-add-icon" onclick="openDdayModal()">+ D-Day 추가</button>
+                        </div>
+                        <div id="ddayList" class="dday-list"></div>
+                    </div>
+                </div>
+
+                <!-- 시계 뷰 -->
+                <div id="clockView" class="view-content">
+                    <div class="clock-container">
+                        <div class="clock-tabs">
+                            <button class="clock-tab active" data-tab="timer">타이머</button>
+                            <button class="clock-tab" data-tab="stopwatch">스톱워치</button>
+                            <button class="clock-tab" data-tab="alarm">알람</button>
+                        </div>
+                        
+                        <div id="timerTab" class="clock-tab-content active">
+                            <div class="timer-display">
+                                <span id="timerMinutes">25</span>:<span id="timerSeconds">00</span>
+                            </div>
+                            <div class="timer-presets">
+                                <button class="preset-btn" onclick="setTimer(5)">5분</button>
+                                <button class="preset-btn" onclick="setTimer(10)">10분</button>
+                                <button class="preset-btn" onclick="setTimer(25)">25분</button>
+                                <button class="preset-btn" onclick="setTimer(60)">1시간</button>
+                            </div>
+                            <div class="timer-controls">
+                                <button id="timerStart" class="btn-control">시작</button>
+                                <button id="timerPause" class="btn-control" style="display:none;">일시정지</button>
+                                <button id="timerReset" class="btn-control">초기화</button>
+                            </div>
+                        </div>
+                        
+                        <div id="stopwatchTab" class="clock-tab-content">
+                            <div class="stopwatch-display">
+                                <span id="stopwatchTime">00:00:00</span>
+                            </div>
+                            <div class="stopwatch-controls">
+                                <button id="stopwatchStart" class="btn-control">시작</button>
+                                <button id="stopwatchPause" class="btn-control" style="display:none;">정지</button>
+                                <button id="stopwatchReset" class="btn-control">초기화</button>
+                                <button id="stopwatchLap" class="btn-control" style="display:none;">랩타임</button>
+                            </div>
+                            <div id="lapsList" class="laps-list"></div>
+                        </div>
+                        
+                        <div id="alarmTab" class="clock-tab-content">
+                            <div class="view-header">
+                                <h4>알람 목록</h4>
+                                <button class="btn-add-icon" onclick="openAlarmModal()">+ 알람 추가</button>
+                            </div>
+                            <div id="alarmList" class="alarm-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 포춘쿠키 뷰 -->
+                <div id="fortuneView" class="view-content">
+                    <div class="fortune-container">
+                        <h3 class="fortune-title">🥠 오늘의 포춘쿠키</h3>
+                        <div id="fortuneCookie" class="fortune-cookie" onclick="breakCookie()">
+                            <div class="cookie-image">🥠</div>
+                            <p class="cookie-text">쿠키를 클릭하세요!</p>
+                        </div>
+                        <div id="fortuneMessage" class="fortune-message" style="display:none;"></div>
+                        <button id="newCookieBtn" class="btn-primary" onclick="resetCookie()" style="display:none; margin-top: 20px;">새 쿠키 받기</button>
+                    </div>
+                </div>
+
+                <!-- 명상 뷰 -->
+                <div id="meditationView" class="view-content">
+                    <div class="meditation-container">
+                        <h3>명상 & 호흡 운동 🧘</h3>
+                        <p class="view-description">편안한 자세로 앉아 화면의 안내를 따라 호흡하세요</p>
+                        
+                        <div class="meditation-programs">
+                            <div class="meditation-card" onclick="startMeditation('calm', 4, 4, '#87CEEB')">
+                                <div class="meditation-emoji">🌊</div>
+                                <h4>평온 호흡</h4>
+                                <p>4초 들숨 - 4초 날숨</p>
+                            </div>
+                            <div class="meditation-card" onclick="startMeditation('deep', 6, 6, '#9370DB')">
+                                <div class="meditation-emoji">🌙</div>
+                                <h4>깊은 호흡</h4>
+                                <p>6초 들숨 - 6초 날숨</p>
+                            </div>
+                            <div class="meditation-card" onclick="startMeditation('energy', 3, 3, '#FFD700')">
+                                <div class="meditation-emoji">☀️</div>
+                                <h4>활력 호흡</h4>
+                                <p>3초 들숨 - 3초 날숨</p>
+                            </div>
+                            <div class="meditation-card" onclick="startMeditation('sleep', 4, 7, '#4B0082')">
+                                <div class="meditation-emoji">✨</div>
+                                <h4>수면 호흡</h4>
+                                <p>4초 들숨 - 7초 날숨</p>
+                            </div>
+                            <div class="meditation-card" onclick="startMeditation('focus', 5, 5, '#32CD32')">
+                                <div class="meditation-emoji">🎯</div>
+                                <h4>집중 호흡</h4>
+                                <p>5초 들숨 - 5초 날숨</p>
+                            </div>
+                            <div class="meditation-card" onclick="startMeditation('relax', 7, 8, '#FF69B4')">
+                                <div class="meditation-emoji">🌸</div>
+                                <h4>이완 호흡</h4>
+                                <p>7초 들숨 - 8초 날숨</p>
+                            </div>
+                        </div>
+                        
+                        <div id="meditationSession" class="meditation-session" style="display:none;">
+                            <div class="meditation-circle" id="meditationCircle"></div>
+                            <div class="meditation-instruction" id="meditationInstruction">준비하세요...</div>
+                            <button class="btn-secondary" onclick="stopMeditation()" style="margin-top: 30px;">종료</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 카테고리 뷰 -->
+                <div id="categoryView" class="view-content">
+                    <div class="view-header">
+                        <h3>카테고리 관리</h3>
+                        <button class="btn-add-icon" onclick="openCategoryModal()">+ 카테고리 추가</button>
+                    </div>
+                    <div id="categoryListView" class="category-list-view"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 모달들 -->
+    
+    <!-- 일정 추가 모달 -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="scheduleModalTitle">일정 추가</h3>
+                <button class="modal-close" onclick="closeScheduleModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>이모티콘 선택 (선택사항)</label>
+                <div class="emoji-selector" id="scheduleEmojiSelector">
+                    <button type="button" class="emoji-btn" data-emoji="">없음</button>
+                    <button type="button" class="emoji-btn" data-emoji="📅">📅</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎉">🎉</button>
+                    <button type="button" class="emoji-btn" data-emoji="💼">💼</button>
+                    <button type="button" class="emoji-btn" data-emoji="🏥">🏥</button>
+                    <button type="button" class="emoji-btn" data-emoji="✈️">✈️</button>
+                    <button type="button" class="emoji-btn" data-emoji="🍽️">🍽️</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎬">🎬</button>
+                    <button type="button" class="emoji-btn" data-emoji="⚽">⚽</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎓">🎓</button>
+                    <button type="button" class="emoji-btn" data-emoji="❤️">❤️</button>
+                </div>
+                <input type="hidden" id="scheduleEmoji" value="">
+                <input type="hidden" id="scheduleEditId" value="">
+            </div>
+            <div class="form-group">
+                <label>일정 제목</label>
+                <input type="text" id="scheduleTitle" placeholder="일정 제목">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>시작 시간</label>
+                    <select id="scheduleStartTime" class="time-select"></select>
+                </div>
+                <div class="form-group">
+                    <label>종료 시간</label>
+                    <select id="scheduleEndTime" class="time-select"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>완료율</label>
+                <div class="completion-selector">
+                    <button type="button" class="completion-btn selected" data-completion="0">0%</button>
+                    <button type="button" class="completion-btn" data-completion="25">25%</button>
+                    <button type="button" class="completion-btn" data-completion="50">50%</button>
+                    <button type="button" class="completion-btn" data-completion="75">75%</button>
+                    <button type="button" class="completion-btn" data-completion="100">100%</button>
+                </div>
+                <input type="hidden" id="scheduleCompletion" value="0">
+            </div>
+            <div class="form-group">
+                <label>카테고리</label>
+                <select id="scheduleCategory" class="category-select">
+                    <option value="">카테고리 없음</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="scheduleRepeat"> 반복 일정
+                </label>
+            </div>
+            <div id="repeatOptions" style="display: none;">
+                <div class="form-group">
+                    <label>반복 주기</label>
+                    <select id="repeatType" class="repeat-select">
+                        <option value="daily">매일</option>
+                        <option value="weekly">매주</option>
+                        <option value="monthly">매월</option>
+                        <option value="yearly">매년</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="scheduleNotification"> 알림 설정
+                </label>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveScheduleBtn" class="btn-primary">저장</button>
+                <button onclick="closeScheduleModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 할 일 추가 모달 -->
+    <div id="todoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>할 일 추가</h3>
+                <button class="modal-close" onclick="closeTodoModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>이모티콘 선택 (선택사항)</label>
+                <div class="emoji-selector" id="todoEmojiSelector">
+                    <button type="button" class="emoji-btn" data-emoji="">없음</button>
+                    <button type="button" class="emoji-btn" data-emoji="📚">📚</button>
+                    <button type="button" class="emoji-btn" data-emoji="💪">💪</button>
+                    <button type="button" class="emoji-btn" data-emoji="🏃">🏃</button>
+                    <button type="button" class="emoji-btn" data-emoji="🍎">🍎</button>
+                    <button type="button" class="emoji-btn" data-emoji="💼">💼</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎯">🎯</button>
+                    <button type="button" class="emoji-btn" data-emoji="✨">✨</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎨">🎨</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎵">🎵</button>
+                    <button type="button" class="emoji-btn" data-emoji="🌟">🌟</button>
+                </div>
+                <input type="hidden" id="todoEmoji" value="">
+            </div>
+            <div class="form-group">
+                <label>할 일 제목</label>
+                <input type="text" id="todoTitle" placeholder="할 일 제목">
+            </div>
+            <div class="form-group">
+                <label>날짜 선택</label>
+                <input type="date" id="todoDate" class="date-input">
+            </div>
+            <div class="form-group">
+                <label>완료율</label>
+                <div class="completion-selector">
+                    <button type="button" class="completion-btn selected" data-completion="0">0%</button>
+                    <button type="button" class="completion-btn" data-completion="25">25%</button>
+                    <button type="button" class="completion-btn" data-completion="50">50%</button>
+                    <button type="button" class="completion-btn" data-completion="75">75%</button>
+                    <button type="button" class="completion-btn" data-completion="100">100%</button>
+                </div>
+                <input type="hidden" id="todoCompletion" value="0">
+            </div>
+            <div class="form-group">
+                <label>우선순위</label>
+                <select id="todoPriority" class="priority-select">
+                    <option value="low">낮음</option>
+                    <option value="medium" selected>중간</option>
+                    <option value="high">높음</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>카테고리</label>
+                <select id="todoCategory" class="category-select">
+                    <option value="">카테고리 없음</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="todoRepeat"> 반복 할 일
+                </label>
+            </div>
+            <div id="todoRepeatOptions" style="display: none;">
+                <div class="form-group">
+                    <label>반복 주기</label>
+                    <select id="todoRepeatType" class="repeat-select">
+                        <option value="daily">매일</option>
+                        <option value="weekly">매주</option>
+                        <option value="monthly">매월</option>
+                        <option value="yearly">매년</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="todoNotification"> 알림 설정
+                </label>
+            </div>
+            <div id="todoNotificationOptions" style="display: none;">
+                <div class="form-group">
+                    <label>알림 시간</label>
+                    <select id="todoNotificationTime" class="time-select"></select>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveTodoBtn" class="btn-primary">저장</button>
+                <button onclick="closeTodoModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 카테고리 추가 모달 -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>카테고리 추가</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>카테고리 이름</label>
+                <input type="text" id="categoryInput" placeholder="카테고리 이름">
+            </div>
+            <div class="form-group">
+                <label>색상</label>
+                <div class="color-picker-container">
+                    <input type="color" id="categoryColor" value="#78C3FB">
+                    <div class="color-preview" id="colorPreview" style="background: #78C3FB;">선택한 색상</div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveCategoryBtn" class="btn-primary">저장</button>
+                <button onclick="closeCategoryModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 연간 목표 추가 모달 -->
+    <div id="yearGoalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>연간 목표 추가</h3>
+                <button class="modal-close" onclick="closeYearGoalModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>목표 제목</label>
+                <input type="text" id="yearGoalTitle" placeholder="예: 책 50권 읽기">
+            </div>
+            <div class="form-group">
+                <label>목표 설명</label>
+                <textarea id="yearGoalDescription" placeholder="목표에 대한 설명" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>카테고리</label>
+                <select id="yearGoalCategory" class="category-select">
+                    <option value="">카테고리 없음</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveYearGoalBtn" class="btn-primary">저장</button>
+                <button onclick="closeYearGoalModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 월간 목표 추가 모달 -->
+    <div id="monthGoalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>월간 목표 추가</h3>
+                <button class="modal-close" onclick="closeMonthGoalModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>이모티콘 선택</label>
+                <div class="emoji-selector" id="monthGoalEmojiSelector">
+                    <button type="button" class="emoji-btn" data-emoji="🎯">🎯</button>
+                    <button type="button" class="emoji-btn" data-emoji="💪">💪</button>
+                    <button type="button" class="emoji-btn" data-emoji="📚">📚</button>
+                    <button type="button" class="emoji-btn" data-emoji="🏃">🏃</button>
+                    <button type="button" class="emoji-btn" data-emoji="💰">💰</button>
+                    <button type="button" class="emoji-btn" data-emoji="🌟">🌟</button>
+                    <button type="button" class="emoji-btn" data-emoji="❤️">❤️</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎨">🎨</button>
+                    <button type="button" class="emoji-btn" data-emoji="🍎">🍎</button>
+                    <button type="button" class="emoji-btn" data-emoji="✨">✨</button>
+                </div>
+                <input type="hidden" id="monthGoalEmoji" value="🎯">
+            </div>
+            <div class="form-group">
+                <label>목표 제목</label>
+                <input type="text" id="monthGoalTitle" placeholder="예: 매일 운동하기">
+            </div>
+            <div class="form-group">
+                <label>목표 설명</label>
+                <textarea id="monthGoalDescription" placeholder="목표에 대한 설명" rows="3"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveMonthGoalBtn" class="btn-primary">저장</button>
+                <button onclick="closeMonthGoalModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 월간 목표 달력 모달 -->
+    <div id="monthGoalCalendarModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="monthGoalCalendarTitle">목표 달성 달력</h3>
+                <button class="modal-close" onclick="closeMonthGoalCalendarModal()">✕</button>
+            </div>
+            <div id="monthGoalCalendarContent" class="month-goal-calendar-content"></div>
+        </div>
+    </div>
+
+    <!-- 메모 작성 모달 -->
+    <div id="memoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>메모 작성</h3>
+                <button class="modal-close" onclick="closeMemoModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>메모 내용</label>
+                <textarea id="memoModalText" placeholder="메모를 입력하세요..." rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <label>사진 추가</label>
+                <div class="memo-images" id="memoModalImages"></div>
+                <label class="btn-upload" style="margin-top: 10px;">
+                    📷 사진 추가
+                    <input type="file" id="memoModalImageInput" accept="image/*" multiple style="display: none;">
+                </label>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveMemoModalBtn" class="btn-primary">저장</button>
+                <button onclick="closeMemoModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 일기 작성 모달 -->
+    <div id="diaryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>일기 쓰기</h3>
+                <button class="modal-close" onclick="closeDiaryModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" id="diaryTitle" placeholder="오늘의 제목">
+            </div>
+            <div class="form-group">
+                <label>오늘의 기분</label>
+                <div class="mood-selector">
+                    <button type="button" class="mood-btn" data-mood="😊" onclick="selectMood('😊')">😊</button>
+                    <button type="button" class="mood-btn" data-mood="😢" onclick="selectMood('😢')">😢</button>
+                    <button type="button" class="mood-btn" data-mood="😡" onclick="selectMood('😡')">😡</button>
+                    <button type="button" class="mood-btn" data-mood="😴" onclick="selectMood('😴')">😴</button>
+                    <button type="button" class="mood-btn" data-mood="😎" onclick="selectMood('😎')">😎</button>
+                    <button type="button" class="mood-btn" data-mood="🥰" onclick="selectMood('🥰')">🥰</button>
+                </div>
+                <input type="hidden" id="diaryMood" value="😊">
+            </div>
+            <div class="form-group">
+                <label>일기 내용</label>
+                <textarea id="diaryContent" placeholder="오늘 하루는 어땠나요?" rows="12"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveDiaryBtn" class="btn-primary">저장</button>
+                <button onclick="closeDiaryModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 타임캡슐 모달 -->
+    <div id="timecapsuleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>타임캡슐 만들기</h3>
+                <button class="modal-close" onclick="closeTimecapsuleModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" id="timecapsuleTitle" placeholder="미래의 나에게">
+            </div>
+            <div class="form-group">
+                <label>메시지</label>
+                <textarea id="timecapsuleMessage" placeholder="미래의 나에게 하고 싶은 말..." rows="8"></textarea>
+            </div>
+            <div class="form-group">
+                <label>열람 날짜</label>
+                <input type="date" id="timecapsuleDate">
+            </div>
+            <div class="modal-buttons">
+                <button id="saveTimecapsuleBtn" class="btn-primary">캡슐 봉인</button>
+                <button onclick="closeTimecapsuleModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- D-Day 추가 모달 -->
+    <div id="ddayModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>D-Day 추가</h3>
+                <button class="modal-close" onclick="closeDdayModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>이벤트 이름</label>
+                <input type="text" id="ddayTitle" placeholder="예: 졸업식, 생일, 기념일">
+            </div>
+            <div class="form-group">
+                <label>날짜</label>
+                <input type="date" id="ddayDate">
+            </div>
+            <div class="form-group">
+                <label>이모티콘</label>
+                <div class="emoji-selector" id="ddayEmojiSelector">
+                    <button type="button" class="emoji-btn" data-emoji="🎂">🎂</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎓">🎓</button>
+                    <button type="button" class="emoji-btn" data-emoji="💑">💑</button>
+                    <button type="button" class="emoji-btn" data-emoji="✈️">✈️</button>
+                    <button type="button" class="emoji-btn" data-emoji="🏆">🏆</button>
+                    <button type="button" class="emoji-btn" data-emoji="🎉">🎉</button>
+                </div>
+                <input type="hidden" id="ddayEmoji" value="🎂">
+            </div>
+            <div class="modal-buttons">
+                <button id="saveDdayBtn" class="btn-primary">저장</button>
+                <button onclick="closeDdayModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 알람 추가 모달 -->
+    <div id="alarmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>알람 추가</h3>
+                <button class="modal-close" onclick="closeAlarmModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>알람 이름</label>
+                <input type="text" id="alarmTitle" placeholder="알람 이름">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>시간</label>
+                    <input type="time" id="alarmTime">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>알람 소리</label>
+                <select id="alarmSound" class="alarm-sound-select">
+                    <option value="default">기본 알람</option>
+                    <option value="soft">부드러운 알람</option>
+                    <option value="loud">강한 알람</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>반복</label>
+                <div class="weekdays-selector">
+                    <label><input type="checkbox" name="alarmDay" value="0"> 일</label>
+                    <label><input type="checkbox" name="alarmDay" value="1"> 월</label>
+                    <label><input type="checkbox" name="alarmDay" value="2"> 화</label>
+                    <label><input type="checkbox" name="alarmDay" value="3"> 수</label>
+                    <label><input type="checkbox" name="alarmDay" value="4"> 목</label>
+                    <label><input type="checkbox" name="alarmDay" value="5"> 금</label>
+                    <label><input type="checkbox" name="alarmDay" value="6"> 토</label>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveAlarmBtn" class="btn-primary">저장</button>
+                <button onclick="closeAlarmModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 날짜별 할 일 보기 모달 -->
+    <div id="dayTodosModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="dayTodosModalTitle">할 일 목록</h3>
+                <button class="modal-close" onclick="closeDayTodosModal()">✕</button>
+            </div>
+            <div id="dayTodosModalContent" class="day-todos-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- 일간 일정 통계 모달 -->
+    <div id="dayStatsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="dayStatsModalTitle">일간 일정 통계</h3>
+                <button class="modal-close" onclick="closeDayStatsModal()">✕</button>
+            </div>
+            <div id="dayStatsModalContent" class="stats-modal-content"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

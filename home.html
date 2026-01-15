@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>홈 - Tweedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="home-container">
+        <header class="home-header">
+            <div class="header-left">
+                <h1 class="home-title">📅 Tweedule</h1>
+            </div>
+            <div class="header-right">
+                <div id="weatherWidget" class="weather-widget">
+                    <span id="weatherIcon">🌤️</span>
+                    <span id="weatherTemp">--°C</span>
+                    <span id="weatherCity">위치 설정</span>
+                </div>
+                <button id="darkModeToggleHome" class="btn-dark-mode">🌙</button>
+                <button id="logoutBtnHome" class="btn-logout">로그아웃</button>
+            </div>
+        </header>
+        
+        <main class="home-main">
+            <h2 class="home-subtitle">오늘도 좋은 하루 되세요! ✨</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-card" data-view="day">
+                    <div class="menu-icon">📆</div>
+                    <h3>일간 일정</h3>
+                    <p>오늘의 일정을 확인하세요</p>
+                </div>
+                
+                <div class="menu-card" data-view="week">
+                    <div class="menu-icon">📅</div>
+                    <h3>주간 일정</h3>
+                    <p>이번 주를 한눈에</p>
+                </div>
+                
+                <div class="menu-card" data-view="month">
+                    <div class="menu-icon">🗓️</div>
+                    <h3>월간 일정</h3>
+                    <p>한 달 전체 보기</p>
+                </div>
+                
+                <div class="menu-card" data-view="year">
+                    <div class="menu-icon">📊</div>
+                    <h3>연간 계획</h3>
+                    <p>1년 목표 관리</p>
+                </div>
+                
+                <div class="menu-card" data-view="monthGoal">
+                    <div class="menu-icon">🎯</div>
+                    <h3>월간 목표</h3>
+                    <p>이번 달 목표 달성</p>
+                </div>
+                
+                <div class="menu-card" data-view="stats">
+                    <div class="menu-icon">📈</div>
+                    <h3>통계</h3>
+                    <p>나의 성취도 확인</p>
+                </div>
+                
+                <div class="menu-card" data-view="todo">
+                    <div class="menu-icon">✅</div>
+                    <h3>할 일</h3>
+                    <p>할 일 관리</p>
+                </div>
+                
+                <div class="menu-card" data-view="memo">
+                    <div class="menu-icon">📝</div>
+                    <h3>메모</h3>
+                    <p>생각을 기록하세요</p>
+                </div>
+                
+                <div class="menu-card" data-view="diary">
+                    <div class="menu-icon">📖</div>
+                    <h3>일기</h3>
+                    <p>하루를 돌아보기</p>
+                </div>
+                
+                <div class="menu-card" data-view="timecapsule">
+                    <div class="menu-icon">🎁</div>
+                    <h3>타임캡슐</h3>
+                    <p>미래의 나에게</p>
+                </div>
+                
+                <div class="menu-card" data-view="dday">
+                    <div class="menu-icon">⏰</div>
+                    <h3>D-Day</h3>
+                    <p>중요한 날 카운터</p>
+                </div>
+                
+                <div class="menu-card" data-view="clock">
+                    <div class="menu-icon">🕐</div>
+                    <h3>시계</h3>
+                    <p>타이머·알람·스톱워치</p>
+                </div>
+                
+                <div class="menu-card" data-view="fortune">
+                    <div class="menu-icon">🥠</div>
+                    <h3>포춘쿠키</h3>
+                    <p>오늘의 행운 메시지</p>
+                </div>
+                
+                <div class="menu-card" data-view="meditation">
+                    <div class="menu-icon">🧘</div>
+                    <h3>명상</h3>
+                    <p>마음의 평화 찾기</p>
+                </div>
+                
+                <div class="menu-card" data-view="category">
+                    <div class="menu-icon">🏷️</div>
+                    <h3>카테고리</h3>
+                    <p>분류 관리</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="home-footer">
+            <p>© 2026 Tweedule | Made by Crsytal_K</p>
+        </footer>
+    </div>
+    
+    <div id="locationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>위치 설정</h3>
+                <button class="modal-close" onclick="closeLocationModal()">✕</button>
+            </div>
+            <div class="form-group">
+                <label>도시 이름 (영어로 입력)</label>
+                <input type="text" id="locationInput" placeholder="예: Seoul, Busan, New York">
+                <p class="input-hint">정확한 날씨 정보를 위해 영어로 입력해주세요</p>
+            </div>
+            <div class="modal-buttons">
+                <button id="saveLocationBtn" class="btn-primary">저장</button>
+                <button onclick="closeLocationModal()" class="btn-secondary">취소</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userStr = localStorage.getItem('currentUser');
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('darkModeToggleHome').textContent = '☀️';
+            }
+            
+            document.getElementById('darkModeToggleHome')?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark);
+                document.getElementById('darkModeToggleHome').textContent = isDark ? '☀️' : '🌙';
+            });
+            
+            document.getElementById('logoutBtnHome')?.addEventListener('click', () => {
+                if (confirm('로그아웃 하시겠습니까?')) {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html';
+                }
+            });
+            
+            document.querySelectorAll('.menu-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const view = card.dataset.view;
+                    localStorage.setItem('initialView', view);
+                    window.location.href = 'index.html';
+                });
+            });
+            
+            document.getElementById('weatherWidget')?.addEventListener('click', () => {
+                document.getElementById('locationModal').classList.add('active');
+            });
+            
+            document.getElementById('saveLocationBtn')?.addEventListener('click', () => {
+                const location = document.getElementById('locationInput').value.trim();
+                if (location) {
+                    localStorage.setItem('userLocation', location);
+                    loadWeather(location);
+                    closeLocationModal();
+                } else {
+                    alert('도시 이름을 입력해주세요.');
+                }
+            });
+            
+            const savedLocation = localStorage.getItem('userLocation');
+            if (savedLocation) {
+                loadWeather(savedLocation);
+            } else {
+                loadWeather('Seoul');
+                localStorage.setItem('userLocation', 'Seoul');
+            }
+        });
+        
+        function closeLocationModal() {
+            document.getElementById('locationModal').classList.remove('active');
+        }
+        
+        async function loadWeather(city) {
+            const WEATHER_API_KEY = 'c01f96b11e477edacb227561dd8d8144'; // 🔥 실제 API Key 입력!
+            
+            if (WEATHER_API_KEY.length !== 32) {
+                console.error('API Key 길이가 이상합니다.');
+                return;
+            }
+            
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${WEATHER_API_KEY}&units=metric&lang=kr`;
+            
+            try {
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert('날씨 API Key가 유효하지 않습니다.');
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                if (data.cod === 200) {
+                    const temp = Math.round(data.main.temp);
+                    const weather = data.weather[0].main;
+                    
+                    let icon = '🌤️';
+                    if (weather.includes('Rain')) icon = '🌧️';
+                    else if (weather.includes('Cloud')) icon = '☁️';
+                    else if (weather.includes('Clear')) icon = '☀️';
+                    else if (weather.includes('Snow')) icon = '❄️';
+                    else if (weather.includes('Thunder')) icon = '⛈️';
+                    
+                    document.getElementById('weatherIcon').textContent = icon;
+                    document.getElementById('weatherTemp').textContent = `${temp}°C`;
+                    document.getElementById('weatherCity').textContent = city;
+                }
+            } catch (error) {
+                console.error('날씨 로드 오류:', error);
+            }
+        }
+    </script>
+</body>
+</html>

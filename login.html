@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>로그인 - Tweedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">📅 Tweedule</h1>
+            <p class="login-subtitle">당신의 하루를 완벽하게</p>
+            
+            <div id="loginForm" class="auth-form">
+                <h2>로그인</h2>
+                <form id="loginFormElement">
+                    <div class="form-group">
+                        <label>이메일</label>
+                        <input type="email" id="loginEmail" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>비밀번호</label>
+                        <input type="password" id="loginPassword" required placeholder="비밀번호">
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">로그인</button>
+                </form>
+                <p class="auth-switch">
+                    계정이 없으신가요? <a href="#" id="showSignup">회원가입</a>
+                </p>
+            </div>
+            
+            <div id="signupForm" class="auth-form" style="display: none;">
+                <h2>회원가입</h2>
+                <form id="signupFormElement">
+                    <div class="form-group">
+                        <label>이름</label>
+                        <input type="text" id="signupName" required placeholder="홍길동">
+                    </div>
+                    <div class="form-group">
+                        <label>이메일</label>
+                        <input type="email" id="signupEmail" required placeholder="example@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>비밀번호</label>
+                        <input type="password" id="signupPassword" required placeholder="비밀번호 (8자 이상)">
+                    </div>
+                    <div class="form-group">
+                        <label>비밀번호 확인</label>
+                        <input type="password" id="signupPasswordConfirm" required placeholder="비밀번호 확인">
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">인증 코드 받기</button>
+                </form>
+                <p class="auth-switch">
+                    이미 계정이 있으신가요? <a href="#" id="showLogin">로그인</a>
+                </p>
+            </div>
+            
+            <div id="verificationForm" class="auth-form" style="display: none;">
+                <h2>이메일 인증</h2>
+                <p class="verification-text">
+                    <span id="verificationEmail"></span>으로<br>
+                    인증 코드를 발송했습니다.
+                </p>
+                <form id="verificationFormElement">
+                    <div class="form-group">
+                        <label>인증 코드 (6자리)</label>
+                        <input type="text" id="verificationCode" required placeholder="123456" maxlength="6" pattern="[0-9]{6}">
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">인증 완료</button>
+                    <button type="button" id="resendCode" class="btn-secondary btn-full">인증 코드 재발송</button>
+                </form>
+                <p class="auth-switch">
+                    <a href="#" id="backToSignup">← 회원가입으로 돌아가기</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
